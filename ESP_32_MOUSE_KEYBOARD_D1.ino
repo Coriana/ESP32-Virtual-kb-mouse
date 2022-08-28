@@ -8,14 +8,26 @@
    TO TYPE [T]
    TFROM HERE THE DEVICE WILL TYPE , eg : TXXXXXXXX
 
-   TO RELEASE PRESSED BUTTONS [R] 
+   TO RELEASE ALL PRESSED BUTTONS [A] 
 
    TO PRESS AND HOLD BUTTONS [P] USE [R] to release
-    PK_L_C // press KEY_LEFT_CONTROL ,
+   //PRESS
+    PK_L_C // KEY_LEFT_CONTROL ,
     PK_L_C  //KEY_LEFT_CTRL
     PK_L_A  //KEY_LEFT_ALT
     PK_D    //KEY_DELETE
     PK_L_S  //KEY_LEFT_SHIFT
+    PK_S_B   //KEY_SPACE
+    P:Key    //KEY_Key
+
+    //RELEASE
+    RK_L_C // RELEASE KEY_LEFT_CONTROL ,
+    RK_L_C  //KEY_LEFT_CTRL
+    RK_L_A  //KEY_LEFT_ALT
+    RK_D    //KEY_DELETE
+    RK_L_S  //KEY_LEFT_SHIFT
+    RK_S_B   //KEY_SPACE
+    R:Key     //KEY_Key
 
     MOUSE CLICK [C]
     CL // left click
@@ -40,7 +52,7 @@
 #endif
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(500000);
   Serial.println("Starting work!");
   Keyboard.begin();
   Mouse.begin();
@@ -63,15 +75,15 @@ void loop() {
 
       if (k == 'T')
       {
-        dprintln("TYPE FUNCTION");
-        Serial.println("TYPING\t" + in_string);
+     //   dprintln("TYPE FUNCTION");
+     //   Serial.println("TYPING\t" + in_string);
         Keyboard.print(in_string);
         todo = _type;
       }
       else if (k == 'S')
       {
-        dprintln("SPECIAL FUNCTION");
-         Serial.println("SPECIAL KEY");
+     //   dprintln("SPECIAL FUNCTION");
+     //    Serial.println("SPECIAL KEY");
      if ( in_string == "KR")
           Keyboard.write(KEY_RETURN);
 else 
@@ -80,26 +92,49 @@ Serial.println("INPUT ERROR \nNO MATCH FOUND FOR THE KEY  ");
       }
       else if (k == 'P')
       {
-        dprintln("PRESS FUNCTION");
-         Serial.println("PRESS AND HOLD");
+      //  dprintln("PRESS FUNCTION");
+      //   Serial.println("PRESS AND HOLD");
         todo = _press;
         if ( in_string == "K_L_C") Keyboard.press(KEY_LEFT_CTRL);
         else if ( in_string == "K_L_A") Keyboard.press(KEY_LEFT_ALT);
         else if ( in_string == "K_D") Keyboard.press(KEY_DELETE);
-        else if ( in_string == "K_L_S") Keyboard.press( KEY_LEFT_SHIFT);
-else 
-Serial.println("INPUT ERROR \nNO MATCH FOUND FOR THE KEY  ");
+        else if ( in_string == "K_L_S") Keyboard.press(KEY_LEFT_SHIFT);
+        else if ( in_string == "K_S_B") Keyboard.press(KEY_SPACE);
+        else if ( in_string == "M_L_B") Mouse.press(1);
+        else if ( in_string == "M_R_B") Mouse.press(2);
+else  
+        kbkey = in_string.charAt(1);
+          Keyboard.press( kbkey );
+      //    Serial.println( "Pressing KEY \t" + String(kbkey));
 
+        }
+      else if (k == 'A')
+      {
+        // Serial.println("RELEASE ALL");
+       // dprintln("RELEASE ALL");
+        Keyboard.releaseAll();
       }
       else if (k == 'R')
       {
-         Serial.println("RELEASE ALL");
-        dprintln("RELEASE ALL");
-        Keyboard.releaseAll();
-      }
+       // dprintln("RELEASE FUNCTION");
+       //  Serial.println("RELEASE FROM HOLD");
+        todo = _press;
+        if ( in_string == "K_L_C") Keyboard.release(KEY_LEFT_CTRL);
+        else if ( in_string == "K_L_A") Keyboard.release(KEY_LEFT_ALT);
+        else if ( in_string == "K_D") Keyboard.release(KEY_DELETE);
+        else if ( in_string == "K_L_S") Keyboard.release( KEY_LEFT_SHIFT);
+        else if ( in_string == "K_S_B") Keyboard.release( KEY_SPACE);
+        else if ( in_string == "M_L_B") Mouse.release(1);
+        else if ( in_string == "M_R_B") Mouse.release(2);
+else  
+        kbkey = in_string.charAt(1);
+          Keyboard.release( kbkey );
+        //  Serial.println( "Releasing KEY \t" + String(kbkey));
+
+        }
       else if (k == 'C')
       {
-         Serial.println("MOUSE CLICK\t "+in_string);
+    //     Serial.println("MOUSE CLICK\t "+in_string);
         if ( in_string == "L") Mouse.click(MOUSE_LEFT);
         else if ( in_string == "R")  Mouse.click(MOUSE_RIGHT);
         else if ( in_string == "M")Mouse.click(MOUSE_MIDDLE);
@@ -127,11 +162,11 @@ Serial.println("INPUT ERROR \nNO MATCH FOUND FOR THE KEY  ");
         f_index = in_string.indexOf(':');
         s_index = in_string.indexOf(':', f_index + 1);
 
-          mouse_X = in_string.substring(0, f_index).toInt();
-          mouse_Y = in_string.substring(f_index + 1, s_index).toInt();
+          mouse_X = (in_string.substring(0, f_index).toInt())*10;
+          mouse_Y = (in_string.substring(f_index + 1, s_index).toInt())*10;
           mouse_S = in_string.substring(s_index + 1).toInt();
           mouse_S = abs(mouse_S);
-          Serial.println( "MOVING MOUSE \n MOUSE X\t" + String(mouse_X) + "\tMOUSE_Y" + String(mouse_X) + "\tMOUSE_S\t" + String(mouse_S));
+   //       Serial.println( "MOVING MOUSE \n MOUSE X\t" + String(mouse_X) + "\tMOUSE_Y" + String(mouse_X) + "\tMOUSE_S\t" + String(mouse_S));
 
         }
         else
@@ -141,8 +176,8 @@ Serial.println("INPUT ERROR \nNO MATCH FOUND FOR THE KEY  ");
 
 
       }
-else
-Serial.println("INPUT NOT IN REQUIRED FORMAT ");
+  else
+    // Serial.println("INPUT NOT IN REQUIRED FORMAT ");
       in_string = "";
     }
 
@@ -167,13 +202,13 @@ Serial.println("INPUT NOT IN REQUIRED FORMAT ");
 
         if ( mouse_X != 0)
         {
-          mouse_X = mouse_X > 0 ? mouse_X - 1 : mouse_X;
-          mouse_X = mouse_X < 0 ? mouse_X + 1 : mouse_X;
+          mouse_X = mouse_X > 0 ? mouse_X - 10 : mouse_X;
+          mouse_X = mouse_X < 0 ? mouse_X + 10 : mouse_X;
         }
         if ( mouse_Y != 0)
         {
-          mouse_Y = mouse_Y > 0 ? mouse_Y - 1 : mouse_Y;
-          mouse_Y = mouse_Y < 0 ? mouse_Y + 1 : mouse_Y;
+          mouse_Y = mouse_Y > 0 ? mouse_Y - 10 : mouse_Y;
+          mouse_Y = mouse_Y < 0 ? mouse_Y + 10 : mouse_Y;
         }
 
       }

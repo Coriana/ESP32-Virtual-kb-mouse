@@ -5,8 +5,8 @@ enum {
 
   }todo;
 
-char k;
-int f_index, s_index ;
+char k, kbkey;
+int f_index, s_index;
 int mouse_X, mouse_Y,mouse_S ;  
 unsigned long mouse_last_move;
 int no_of_delimiter=0;

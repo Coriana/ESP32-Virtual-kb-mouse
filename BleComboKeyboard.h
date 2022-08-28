@@ -18,6 +18,7 @@ const uint8_t KEY_RIGHT_SHIFT = 0x85;
 const uint8_t KEY_RIGHT_ALT = 0x86;
 const uint8_t KEY_RIGHT_GUI = 0x87;
 
+const uint8_t KEY_SPACE = 0x20;
 const uint8_t KEY_UP_ARROW = 0xDA;
 const uint8_t KEY_DOWN_ARROW = 0xD9;
 const uint8_t KEY_LEFT_ARROW = 0xD8;
@@ -88,39 +89,39 @@ typedef struct
 
 class BleComboKeyboard : public Print
 {
-private:
-  BleConnectionStatus* connectionStatus;
-  BLEHIDDevice* hid;
-  BLECharacteristic* inputKeyboard;
-  BLECharacteristic* outputKeyboard;
-  BLECharacteristic* inputMediaKeys;
-  
-  KeyReport _keyReport;
-  MediaKeyReport _mediaKeyReport;
-  static void taskServer(void* pvParameter);
+  private:
+    BleConnectionStatus* connectionStatus;
+    BLEHIDDevice* hid;
+    BLECharacteristic* inputKeyboard;
+    BLECharacteristic* outputKeyboard;
+    BLECharacteristic* inputMediaKeys;
 
-public:
-  BleComboKeyboard(std::string deviceName = "ESP32 Keyboard/Mouse", std::string deviceManufacturer = "Espressif", uint8_t batteryLevel = 100);
-  void begin(void);
-  void end(void);
-  void sendReport(KeyReport* keys);
-  void sendReport(MediaKeyReport* keys);
-  size_t press(uint8_t k);
-  size_t press(const MediaKeyReport k);
-  size_t release(uint8_t k);
-  size_t release(const MediaKeyReport k);
-  size_t write(uint8_t c);
-  size_t write(const MediaKeyReport c);
-  size_t write(const uint8_t *buffer, size_t size);
-  
-  void releaseAll(void);
-  bool isConnected(void);
-  void setBatteryLevel(uint8_t level);
-  uint8_t batteryLevel;
-  std::string deviceManufacturer;
-  std::string deviceName;
+    KeyReport _keyReport;
+    MediaKeyReport _mediaKeyReport;
+    static void taskServer(void* pvParameter);
 
-  BLECharacteristic* inputMouse;
+  public:
+    BleComboKeyboard(std::string deviceName = "ESP32 Keyboard/Mouse", std::string deviceManufacturer = "Espressif", uint8_t batteryLevel = 100);
+    void begin(void);
+    void end(void);
+    void sendReport(KeyReport* keys);
+    void sendReport(MediaKeyReport* keys);
+    size_t press(uint8_t k);
+    size_t press(const MediaKeyReport k);
+    size_t release(uint8_t k);
+    size_t release(const MediaKeyReport k);
+    size_t write(uint8_t c);
+    size_t write(const MediaKeyReport c);
+    size_t write(const uint8_t *buffer, size_t size);
+
+    void releaseAll(void);
+    bool isConnected(void);
+    void setBatteryLevel(uint8_t level);
+    uint8_t batteryLevel;
+    std::string deviceManufacturer;
+    std::string deviceName;
+
+    BLECharacteristic* inputMouse;
 
 };
 
